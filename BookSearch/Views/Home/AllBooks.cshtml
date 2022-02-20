@@ -1,0 +1,59 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@*@page
+@using BookSearch.Components
+@model Document*@
+
+
+@{
+    ViewData["Title"] = "All Books";
+}
+
+<head>
+<style>
+body {
+ 
+ background-color: aliceblue;
+}
+</style>
+</head>
+<body>
+@if (ViewData["books"] != null)
+{
+    
+    <div  class="align-content-center" align="justify">
+
+
+        <table class="table" align="center">
+            <th> 
+                @*@Html.ActionLink("Book Name", "SortBooks", new { @sortOrder = SortDirection.Ascending })<i class="fa fa-fw fa-sort">*@
+                    @Html.DisplayName("Book Name")
+                </th>
+        @foreach (Book item in ViewData["books"] as IList<Book>)
+        {
+            <tr>
+            <td >
+                @Html.ActionLink(item.name.ToString(),"UrlBuilder","Home",new {@Id=item._id,@Name=item.name})
+            </td>
+            </tr>
+        }
+        
+       </table>
+
+    </div>
+    
+    
+}
+else 
+{
+    <div class="align-content-center">
+       <p>Sorry! No Books were Found!</p> 
+        </div>
+    
+}
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+
+</body>

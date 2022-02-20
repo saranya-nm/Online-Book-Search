@@ -1,0 +1,89 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+
+@model ChapterDocument
+@{
+    ViewData["title"] = "Chapters";
+}
+<head>
+     @*   <script>
+    $(function () {
+        $("#check2").click(function () {
+            if ($(this).is(':checked')) {
+                $("#text2").Value="clicked";
+            }
+            
+        });
+    });
+</script>*@
+<style>
+body {
+ 
+ background-color: aliceblue;
+}
+</style>
+</head>
+<body>
+@*@(await Html.RenderComponentAsync<Chapters>(RenderMode.ServerPrerendered))*@
+    <h3>@Html.DisplayName(ViewBag.bookName.ToString())</h3>
+<table>
+    <tr>
+   @using(Html.BeginForm("SearchChapters","Home",new{@id=ViewBag.id.ToString(),@bookname=ViewBag.bookName.ToString()}))
+    {
+    
+  <td> @Html.DisplayName("Search For A Chapter ")<i class="fa fa-fw fa-filter"></i></td>
+  <td> @Html.TextBox("SearchValue")</td>
+   <td><input class="btn btn-primary" type="submit" /></td>
+}
+</tr>
+
+</table>
+<div align="right">
+@Html.ActionLink("Show 10 per page","UrlBuilder",new {@SortOrder= ViewBag.sortOrder, @Name=ViewBag.bookName.ToString(),@Id=ViewBag.id.ToString(),@Page=ViewBag.page,@Limit="10" },new{ @align="right"})<br />
+@Html.ActionLink("Show All","UrlBuilder",new {@SortOrder= ViewBag.sortOrder, @Name=ViewBag.bookName.ToString(),@Id=ViewBag.id.ToString(),@Page=ViewBag.page,@Limit="None" },new{ @align="right"})
+
+
+
+</div>
+<div>
+     <table class="table">
+         <th style="width: 90%">
+             
+             @Html.DisplayName("Chapter Name ")
+             @Html.ActionLink("", "UrlBuilder", new { @SortOrder = SortDirection.Ascending,@Name=ViewBag.bookName.ToString(),@Id=ViewBag.id.ToString(),@Page=ViewBag.page,@Limit=ViewBag.limit },new{@class="fa fa-fw fa-arrow-up"})
+             
+             @Html.ActionLink("", "UrlBuilder", new { @SortOrder = SortDirection.Descending,@Name=ViewBag.bookName.ToString(),@Id=ViewBag.id.ToString(),@Page=ViewBag.page,@Limit=ViewBag.limit },new{@class="fa fa-fw fa-arrow-down"})
+             </th>
+             <th>
+            @Html.DisplayName("Page Num :" + ViewBag.page.ToString())
+             
+         </th>
+@if(ViewData["chapter"]!=null)
+{
+    
+    @foreach(var item in  ViewData["chapter"] as IList<Chapter>)
+    {
+        <tr>
+            <td>
+                
+                @Html.DisplayName((item.chapterName).ToString())
+                
+            </td>
+           <td>
+               @*@Html.CheckBox("IsChecked",new { @id = "check2" })*@
+           </td>
+
+            
+        </tr>
+    }
+}
+</table>
+</div>
+<div align="right">
+   
+@Html.ActionLink("Previous","UrlBuilder",new {@SortOrder= ViewBag.sortOrder, @Name=ViewBag.bookName.ToString(),@Id=ViewBag.id.ToString(),@Page=(Convert.ToInt32(ViewBag.page)==1)?1:Convert.ToInt32(ViewBag.page)-1,@Limit="10" },new{@align="right"})
+@Html.ActionLink("Next","UrlBuilder",new {@SortOrder= ViewBag.sortOrder, @Name=ViewBag.bookName.ToString(),@Id=ViewBag.id.ToString(),@Page=Convert.ToInt32(ViewBag.page) + 1,@Limit="10" },new{@align="right"})
+</div>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</body>

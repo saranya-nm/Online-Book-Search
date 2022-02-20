@@ -1,0 +1,62 @@
+﻿@using System.Web
+@using System.Web.Optimization
+
+
+@model SearchSelection
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<head>
+    
+<style>
+body {
+   /*background: 'C:\Users\saran\VisualStudioCodeProjects\BookSearch\BookSearch\Views\Home\Images\book.png';*/
+ background-color: aliceblue;
+}
+</style>
+</head>
+<body>
+    <marquee><strong> Simple Search for the book of your choice! </strong></marquee>
+<p style="text-align:center">
+<div class="text-center">
+    <h1 class="display-4">Welcome To Online Book Search</h1>
+    
+    
+</div>
+
+<div class="text-center">
+    
+        <h2 class="display-9">Enter the Book Name </h2>
+        @using(Html.BeginForm("SearchBooks","Home",FormMethod.Post))
+        {
+    <div class="form-group"> 
+            @*<input type="text" maxlength=100 size=50 name="searchValue" />*@
+            <p>@Html.TextBoxFor(model=>model.SearchValue,new {@class = "form-control",@maxlength  = "50",name="SearchValue"})</p>
+            <p>@Html.ValidationMessageFor(model=>model.SearchValue,"",new{@class = "text-danger"})</p>
+             @*<p class="error">@Html.DisplayName(ViewBag.ErrorMessage.ToString())</p>*@
+            
+     </div>
+           
+             <div class="form-group">
+            <table class="align-content-around" align="center">
+                <tr><td>@Html.RadioButton("SearchType",SearchType.match,false  )</td><td> Find Exact Match </td></tr>
+             <tr><td>@Html.RadioButton("SearchType",SearchType.negate,false  )</td><td> Should Not Match</td></tr>
+             <tr><td> @Html.RadioButton("SearchType",SearchType.regexmatch,true  )  </td><td> Should Include Above Words </td></tr>
+             <tr><td>@Html.RadioButton("SearchType",SearchType.regexnegate,false  )</td><td> Should Not Include Above Words </td></tr>
+           </table><br />
+           </div>
+           <div class="form-group">
+   <p class="text-muted">
+   <input class="btn btn-primary" type="submit" value="Submit"/>
+
+            
+            
+                 <a class="btn btn-primary" href='@Url.Action("AllBooks","Home")'>Show All Books</a> 
+            </p>
+            </div>
+           }
+ </div>
+ </p>
+
+ </body>
