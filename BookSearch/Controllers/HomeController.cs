@@ -9,6 +9,7 @@ namespace BookSearch.Controllers
     {
         public Document books=null;
         public const string _baseUri = "https://the-one-api.dev/v2/";
+        public const string BEARER_NAME= "Bearer";
         
 
         private readonly ILogger<HomeController> _logger;
@@ -139,51 +140,18 @@ namespace BookSearch.Controllers
         #endregion
         #region "Chapters"
 
-   
-        /// <summary>
-        /// Search for Particular Chapters
-        /// </summary>
-        /// <param name="searchValue"></param>
-        /// <param name="id"></param>
-        /// <param name="bookName"></param>
-        /// <returns></returns>       
-        public IActionResult SearchChapters(string searchValue, string id,string bookName)
-        
-        {
-            using HttpClient client = new HttpClient();
-            {
-                client.BaseAddress = new Uri(_baseUri);
-                client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer","C_ld0Jv_Map_hjS1AzMt");
-                var responseTask = client.GetAsync($"chapter?chapterName=/{searchValue}/i");
-                responseTask.Wait();
-                ChapterDocument docs = new ChapterDocument();
-                var result = responseTask.Result;
-                if (result.IsSuccessStatusCode)
-                {
-                    var readtask = result.Content.ReadFromJsonAsync<ChapterDocument>();
-                    readtask.Wait();
-
-                    docs = readtask.Result;
-
-                }
-                ViewData["chapter"] = docs.docs;
-                ViewBag.bookName= bookName;
-                ViewBag.id= id;
-                ViewBag.page = 1;
-                return View("Chapters", docs);
-            }
-
-        }
       /// <summary>
       /// Retrieves all the book chapters
       /// </summary>
       /// <param name="url"></param>
       /// <returns></returns>
-        public ChapterDocument GetAllChapters(string url)
+        public void GetAllChapters(string url)
         {
             using HttpClient client = new HttpClient();
             {
                 client.BaseAddress = new Uri(_baseUri);
+                client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue(BEARER_NAME,
+                    Environment.GetEnvironmentVariable("BEARER_KEY"));
                 var responseTask = client.GetAsync(url);
                 responseTask.Wait();
                 ChapterDocument docs = new ChapterDocument();
@@ -197,9 +165,7 @@ namespace BookSearch.Controllers
 
                 }
                 ViewData["chapter"] = docs.docs;
-                return docs;
             }
-
         }
       
         /// <summary>
@@ -211,16 +177,26 @@ namespace BookSearch.Controllers
         /// <param name="Limit"></param>
         /// <param name="SortOrder"></param>
         /// <returns></returns>
-        public IActionResult UrlBuilder(string Name, string Id, int Page=1,string Limit="None", SortDirection SortOrder = SortDirection.Default)
+        public IActionResult UrlBuilder(string Name, string Id, int Page=1,string Limit="None",
+            SortDirection SortOrder = SortDirection.Default,string searchValue="")
         
         {
-            string url = $"book/{Id}/chapter";
+            string url;
+            if (searchValue == "")
+                url = $"book/{Id}/chapter";
+            else
+                url = $"chapter?chapterName=/{searchValue}/i";
+
             if (SortOrder != SortDirection.Default)
-                 switch(SortOrder)
-                {
-                    case SortDirection.Ascending: url += "?sort=chapterName:asc";break;
-                    case SortDirection.Descending: url += "?sort=chapterName:desc";break;
-                }
+                if (searchValue == "")
+                    url += "?";
+                else
+                    url+="&";
+                    switch (SortOrder)
+                    {
+                        case SortDirection.Ascending: url += "sort=chapterName:asc"; break;
+                        case SortDirection.Descending: url += "sort=chapterName:desc"; break;
+                    }
             if (Limit != "None")
             {
                 if (SortOrder != SortDirection.Default)
@@ -230,12 +206,14 @@ namespace BookSearch.Controllers
                 
                 url += $"limit=10&page={Page}";
             }
+            ViewBag.searchValue=searchValue;
             ViewBag.bookName = Name;
             ViewBag.id = Id;
             ViewBag.page = Page;
             ViewBag.limit = Limit;
             ViewBag.sortOrder = SortOrder;
-            return View("Chapters",GetAllChapters(url));
+            GetAllChapters(url);
+            return View("Chapters");
         }
 
       
