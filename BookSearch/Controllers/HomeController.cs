@@ -9,6 +9,7 @@ namespace BookSearch.Controllers
     {
         public Document books=null;
         public const string _baseUri = "https://the-one-api.dev/v2/";
+        public const string BEARER_NAME= "Bearer";
         
 
         private readonly ILogger<HomeController> _logger;
@@ -149,7 +150,8 @@ namespace BookSearch.Controllers
             using HttpClient client = new HttpClient();
             {
                 client.BaseAddress = new Uri(_baseUri);
-                client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", "C_ld0Jv_Map_hjS1AzMt");
+                client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue(BEARER_NAME,
+                    Environment.GetEnvironmentVariable("BEARER_KEY"));
                 var responseTask = client.GetAsync(url);
                 responseTask.Wait();
                 ChapterDocument docs = new ChapterDocument();
@@ -163,9 +165,7 @@ namespace BookSearch.Controllers
 
                 }
                 ViewData["chapter"] = docs.docs;
-                //return docs;
             }
-
         }
       
         /// <summary>
