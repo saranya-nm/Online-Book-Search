@@ -40,63 +40,62 @@ namespace BookSearch.Controllers
         /// Its a call from the Show All Books from the Home page
         /// </summary>
         /// <returns></returns>
-        public IActionResult AllBooks()
-        {
-            try
-            {
+        //public IActionResult AllBooks()
+        //{
+        //    try
+        //    {
                 
-                    using HttpClient client = new HttpClient();
-                    {
-                        client.BaseAddress = new Uri(_baseUri);
-                        var responseTask = client.GetAsync("Book");
-                        responseTask.Wait();
-                        Document docs = null;
+        //            using HttpClient client = new HttpClient();
+        //            {
+        //                client.BaseAddress = new Uri(_baseUri);
+        //                var responseTask = client.GetAsync("Book");
+        //                responseTask.Wait();
+        //                Document docs = null;
 
 
-                        //JsonConvert.DeserializeObject<object>(jsonString)
-                        var result = responseTask.Result;
-                        if (result.IsSuccessStatusCode)
-                        {
-                            var readtask = result.Content.ReadFromJsonAsync<Document>();
-                            readtask.Wait();
+        //                //JsonConvert.DeserializeObject<object>(jsonString)
+        //                var result = responseTask.Result;
+        //                if (result.IsSuccessStatusCode)
+        //                {
+        //                    var readtask = result.Content.ReadFromJsonAsync<Document>();
+        //                    readtask.Wait();
 
-                            docs = readtask.Result;
+        //                    docs = readtask.Result;
 
-                        }
-                        books = new Document();
-                        books = docs;
-                        ViewData["books"] = docs.docs.Count > 0 ? docs.docs : null;
-                        return View();
-                    }
+        //                }
+        //                books = new Document();
+        //                books = docs;
+        //                ViewData["books"] = docs.docs.Count > 0 ? docs.docs : null;
+        //                return View();
+        //            }
                
-            }
-            catch (Exception ex)
-            {
-                throw (ex);
-            }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        throw (ex);
+        //    }
 
-        }
+        //}
         /// <summary>
         /// This is a filter call to Filter and Seach books
         /// </summary>
         /// <param name="searchValue"></param>
         /// <param name="searchType"></param>
         /// <returns></returns>
-        [HttpPost]
-        public IActionResult SearchBooks(string searchValue, SearchType searchType)
+        public IActionResult SearchBooks(string searchValue="", SearchType searchType=SearchType.AllBooks)
         {
             try
             {
 
-        if (ModelState.IsValid)
+        if (ModelState.IsValid || searchType==SearchType.AllBooks)
         {
             string uri = "";
                 switch (searchType)
                 {
-                    case SearchType.match: uri = "=" + searchValue; break;
-                    case SearchType.negate: uri = "!=" + searchValue; break;
-                    case SearchType.regexmatch: uri = "=/" + searchValue + "/i"; break;
-                    case SearchType.regexnegate: uri = "!=/" + searchValue + "/i"; break;
+                    case SearchType.Match: uri = "?name=" + searchValue; break;
+                    case SearchType.Negate: uri = "?name!=" + searchValue; break;
+                    case SearchType.Regexmatch: uri = "?name=/" + searchValue + "/i"; break;
+                    case SearchType.Regexnegate: uri = "?name!=/" + searchValue + "/i"; break;
                     default: break;
                 }
 
@@ -104,7 +103,7 @@ namespace BookSearch.Controllers
                 {
 
                     client.BaseAddress = new Uri(_baseUri);
-                    var responseTask = client.GetAsync("book?name" + uri);
+                    var responseTask = client.GetAsync("book" + uri);
                     responseTask.Wait();
                     Document docs = new Document();
 

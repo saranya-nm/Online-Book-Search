@@ -3,12 +3,12 @@
 
 namespace BookSearch.Models
 {
-    public enum SearchType { match, negate, regexmatch, regexnegate }
+    public enum SearchType { Match, Negate, Regexmatch, Regexnegate, AllBooks }
 
     public enum SortDirection { Ascending,Descending,Default}
     public class SearchSelection
     {
-
+        [Display (Name= "Search")]
         [Required (ErrorMessage="Please Enter Search Value.")]
         public string SearchValue { get; set; }
         

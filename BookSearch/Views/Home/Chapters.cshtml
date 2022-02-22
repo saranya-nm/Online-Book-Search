@@ -7,16 +7,13 @@
     ViewData["title"] = "Chapters";
 }
 <head>
-     @*   <script>
-    $(function () {
-        $("#check2").click(function () {
-            if ($(this).is(':checked')) {
-                $("#text2").Value="clicked";
-            }
-            
-        });
-    });
-</script>*@
+   @*  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>*@
+
+@*    <script src='https://code.jquery.com/jquery-1.12.3.js'></script>
+   <script src='https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js'></script>
+   <script src="https://cdn.datatables.net/1.10.12/js/dataTables.bootstrap.min.js" charset="utf-8"></script>*@
 <style>
 body {
  
@@ -85,11 +82,24 @@ body {
 </table>
 </div>
 <div align="right">
-   
+@*   <ul class="pagination">
+  <li><a href="#">1</a></li>
+  <li><a href="#">2</a></li>
+  <li><a href="#">3</a></li>
+  <li><a href="#">4</a></li>
+  <li><a href="#">5</a></li>
+</ul>*@
 @Html.ActionLink("Previous","UrlBuilder",new {@SortOrder= ViewBag.sortOrder, @Name=ViewBag.bookName.ToString(),@Id=ViewBag.id.ToString(),
     @Page=(Convert.ToInt32(ViewBag.page)==1)?1:Convert.ToInt32(ViewBag.page)-1,@Limit="10",@SearchValue=ViewBag.searchValue },new{@align="right"})
 @Html.ActionLink("Next","UrlBuilder",new {@SortOrder= ViewBag.sortOrder, @Name=ViewBag.bookName.ToString(),@Id=ViewBag.id.ToString(),
     @Page=Convert.ToInt32(ViewBag.page) + 1,@Limit="10",@SearchValue=ViewBag.searchValue },new{@align="right"})
 </div>
+@*<link rel="stylesheet" asp-href-include="/lib/bootstrap/dist/**/*.min.css"
+      asp-href-exclude="**/*-reboot*,**/*-grid" />*@
+@*       <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" />
+       <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+       <link rel="stylesheet" href="https://cdn.datatables.net/1.10.12/css/dataTables.bootstrap.min.css">
+         <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.1.0/css/responsive.bootstrap.min.css">*@
+      
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </body>
