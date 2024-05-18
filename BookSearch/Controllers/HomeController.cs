@@ -1,4 +1,5 @@
-﻿using BookSearch.Models;
+﻿using BookSearch.Infrastructure.Interfaces;
+using BookSearch.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
@@ -7,16 +8,13 @@ namespace BookSearch.Controllers
 {
     public class HomeController : Controller
     {
-        public Document books=null;
-        public const string _baseUri = "https://the-one-api.dev/v2/";
-        public const string BEARER_NAME= "Bearer";
-        
-
+        public IBookRepo _bookRepo;
         private readonly ILogger<HomeController> _logger;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger,IBookRepo bookRepo)
         {
             _logger = logger;
+            _bookRepo = bookRepo;
         }
         /// <summary>
         /// Home View
@@ -40,39 +38,18 @@ namespace BookSearch.Controllers
         /// Its a call from the Show All Books from the Home page
         /// </summary>
         /// <returns></returns>
-        public IActionResult AllBooks()
+        public async Task<IActionResult> AllBooks()
         {
             try
-            {
-                
-                    using HttpClient client = new HttpClient();
-                    {
-                        client.BaseAddress = new Uri(_baseUri);
-                        var responseTask = client.GetAsync("Book");
-                        responseTask.Wait();
-                        Document docs = null;
-
-
-                        //JsonConvert.DeserializeObject<object>(jsonString)
-                        var result = responseTask.Result;
-                        if (result.IsSuccessStatusCode)
-                        {
-                            var readtask = result.Content.ReadFromJsonAsync<Document>();
-                            readtask.Wait();
-
-                            docs = readtask.Result;
-
-                        }
-                        books = new Document();
-                        books = docs;
-                        ViewData["books"] = docs.docs.Count > 0 ? docs.docs : null;
-                        return View();
-                    }
-               
+            {    
+                var docs= await _bookRepo.GetAllBooks();
+                ViewData["books"] = docs.docs.Count > 0 ? docs.docs : null;
+                return View();
+        
             }
             catch (Exception ex)
             {
-                throw (ex);
+                throw ex;
             }
 
         }
@@ -83,47 +60,16 @@ namespace BookSearch.Controllers
         /// <param name="searchType"></param>
         /// <returns></returns>
         [HttpPost]
-        public IActionResult SearchBooks(string searchValue, SearchType searchType)
+        public async Task<IActionResult> SearchBooks(string searchValue, SearchType searchType)
         {
             try
             {
-
-        if (ModelState.IsValid)
-        {
-            string uri = "";
-                switch (searchType)
+                if (ModelState.IsValid)
                 {
-                    case SearchType.match: uri = "=" + searchValue; break;
-                    case SearchType.negate: uri = "!=" + searchValue; break;
-                    case SearchType.regexmatch: uri = "=/" + searchValue + "/i"; break;
-                    case SearchType.regexnegate: uri = "!=/" + searchValue + "/i"; break;
-                    default: break;
-                }
-
-                using HttpClient client = new HttpClient();
-                {
-
-                    client.BaseAddress = new Uri(_baseUri);
-                    var responseTask = client.GetAsync("book?name" + uri);
-                    responseTask.Wait();
-                    Document docs = new Document();
-
-
-                    //JsonConvert.DeserializeObject<object>(jsonString)
-                    var result = responseTask.Result;
-                    if (result.IsSuccessStatusCode)
-                    {
-                        var readtask = result.Content.ReadFromJsonAsync<Document>();
-                        readtask.Wait();
-
-                        docs = readtask.Result;
-
-                    }
-
+                    var docs = await _bookRepo.SearchBooks(searchValue, searchType);
                     ViewData["books"] = docs.docs.Count > 0 ? docs.docs : null;
                         
-                    return View("AllBooks");
-                }
+                    return View("AllBooks");   
                 }
                 else
                 {
@@ -145,28 +91,7 @@ namespace BookSearch.Controllers
       /// </summary>
       /// <param name="url"></param>
       /// <returns></returns>
-        public void GetAllChapters(string url)
-        {
-            using HttpClient client = new HttpClient();
-            {
-                client.BaseAddress = new Uri(_baseUri);
-                client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue(BEARER_NAME,
-                    Environment.GetEnvironmentVariable("BEARER_KEY"));
-                var responseTask = client.GetAsync(url);
-                responseTask.Wait();
-                ChapterDocument docs = new ChapterDocument();
-                var result = responseTask.Result;
-                if (result.IsSuccessStatusCode)
-                {
-                    var readtask = result.Content.ReadFromJsonAsync<ChapterDocument>();
-                    readtask.Wait();
-
-                    docs = readtask.Result;
-
-                }
-                ViewData["chapter"] = docs.docs;
-            }
-        }
+       
       
         /// <summary>
         /// This method builds a url to sort/page the chapters
@@ -177,7 +102,7 @@ namespace BookSearch.Controllers
         /// <param name="Limit"></param>
         /// <param name="SortOrder"></param>
         /// <returns></returns>
-        public IActionResult UrlBuilder(string Name, string Id, int Page=1,string Limit="None",
+        public async Task<IActionResult> UrlBuilder(string Name, string Id, int Page=1,string Limit="None",
             SortDirection SortOrder = SortDirection.Default,string searchValue="")
         
         {
@@ -212,7 +137,8 @@ namespace BookSearch.Controllers
             ViewBag.page = Page;
             ViewBag.limit = Limit;
             ViewBag.sortOrder = SortOrder;
-            GetAllChapters(url);
+            var chap=await _bookRepo.GetAllChapters(url);
+            ViewData["books"] = chap.Count > 0 ? chap : null;
             return View("Chapters");
         }
 
