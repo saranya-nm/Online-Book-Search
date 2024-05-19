@@ -18,6 +18,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Remove="Models\Book.cs" />
+    <Compile Remove="Models\Chapter.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Include="Views\Home\AllBooks.cshtml" />
     <None Include="Views\Home\Index.cshtml" />
     <None Include="Views\Home\Privacy.cshtml" />

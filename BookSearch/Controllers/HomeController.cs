@@ -138,7 +138,7 @@ namespace BookSearch.Controllers
             ViewBag.limit = Limit;
             ViewBag.sortOrder = SortOrder;
             var chap=await _bookRepo.GetAllChapters(url);
-            ViewData["books"] = chap.Count > 0 ? chap : null;
+            ViewData["chapter"] = chap.Count > 0 ? chap : null;
             return View("Chapters");
         }
 

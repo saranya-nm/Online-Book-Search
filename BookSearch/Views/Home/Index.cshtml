@@ -6,6 +6,7 @@
 @{
     ViewData["Title"] = "Home Page";
 }
+@section Scripts{<script type="text/javascript" src="~/js/index.js"></script>}
 
 <head>
     <link href="~/vendors/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
@@ -26,10 +27,10 @@
             {
                 <div class="form-group">
                     @*<input type="text" maxlength=100 size=50 name="searchValue" />*@
-                    <p>@Html.TextBoxFor(model=>model.SearchValue,new {@class = "form-control",@maxlength  = "50",name="SearchValue"})</p>
-                    <p>@Html.ValidationMessageFor(model=>model.SearchValue,"",new{@class = "text-danger"})</p>
-                    @*<p class="error">@Html.DisplayName(ViewBag.ErrorMessage.ToString())</p>*@
-
+                    <p>@Html.TextBoxFor(model=>model.SearchValue,new {@class = "form-control",@maxlength  = "50",name="SearchValue", @id="SearchText"})</p>
+                    @*<p>@Html.ValidationMessageFor(model=>model.SearchValue,"Please enter the search value.",new{@class = "text-danger"})</p>*@
+                    @*<span class="field-validation-error text-danger"  data-valmsg-for="SearchValue" data-valmsg-replace="false">
+                        The SearchValue field is required.</span>*@
                 </div>
 
                 <div class="form-group">
@@ -42,7 +43,7 @@
                 </div>
                 <div class="form-group">
                     <p class="text-muted">
-                        <input class="btn btn-primary" type="submit" value="Submit" />
+                        <input class="btn btn-primary" id="test" type="submit" value="Submit" onclick="validateForm()"/>
                         <a class="btn btn-primary" href='@Url.Action("AllBooks","Home")'>Show All Books</a>
                     </p>
                 </div>

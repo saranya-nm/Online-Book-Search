@@ -13,7 +13,7 @@
       "launchBrowser": true,
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
-        "BEARER_KEY": ""
+        "BEARER_KEY": "C_ld0Jv_Map_hjS1AzMt"
       },
       "applicationUrl": "https://localhost:7058;http://localhost:5058",
       "dotnetRunMessages": true

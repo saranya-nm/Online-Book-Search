@@ -39,18 +39,17 @@ namespace BookSearch.Infrastructure.Business
                     Environment.GetEnvironmentVariable("BEARER_KEY"));
                 var responseTask = client.GetAsync(url);
                 responseTask.Wait();
-                ChapterDocument docs = new ChapterDocument();
+                ChapterDocument chapter = new ChapterDocument();
                 var result = responseTask.Result;
                 if (result.IsSuccessStatusCode)
                 {
-                    var readtask = result.Content.ReadFromJsonAsync<ChapterDocument>();
-                    readtask.Wait();
+                    var readTask = result.Content.ReadFromJsonAsync<ChapterDocument>();
+                    readTask.Wait();
 
-                    docs = readtask.Result;
-
+                    chapter = readTask.Result;
                 }
-                if (docs != null)
-                    return docs.docs;
+                if (chapter != null)
+                    return chapter.docs;
                 else
                     return new List<Chapter>();
             }
@@ -58,7 +57,7 @@ namespace BookSearch.Infrastructure.Business
 
         private async Task<Document> GetBooks(string url)
         {
-            Document docs = new Document();
+            Document books = new Document();
             using HttpClient client = new HttpClient();
             {
                 client.BaseAddress = new Uri(_configuration["BookAPI"]);
@@ -71,11 +70,11 @@ namespace BookSearch.Infrastructure.Business
                     var readtask = result.Content.ReadFromJsonAsync<Document>();
                     readtask.Wait();
 
-                    docs = readtask.Result;
+                    books = readtask.Result;
 
                 }
             }
-            return docs;
+            return books;
         }
 
 

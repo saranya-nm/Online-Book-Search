@@ -34,7 +34,7 @@ body {
         {
             <tr>
             <td >
-                @Html.ActionLink(item.name.ToString(),"UrlBuilder","Home",new {@Id=item._id,@Name=item.name})
+                @Html.ActionLink(item.Name.ToString(),"UrlBuilder","Home",new {@Id=item.Id,@Name=item.Name})
             </td>
             </tr>
         }
