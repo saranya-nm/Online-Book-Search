@@ -13,7 +13,7 @@
     }
     public class Book
     {
-        public string Id { get; set; }=String.Empty;
+        public string _id { get; set; }=String.Empty;
         public string Name { get; set; }=String.Empty ;
     }
 }
