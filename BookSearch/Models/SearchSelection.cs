@@ -9,8 +9,8 @@ namespace BookSearch.Models
     public class SearchSelection
     {
 
-        [Required (ErrorMessage="Please Enter Search Value.")]
-        public string SearchValue { get; set; }
+        //[Required (ErrorMessage="Please Enter Search Value.")]
+        public string SearchValue { get; set; }=String.Empty;
         
         public SearchType SearchType { get; set; }
     }
